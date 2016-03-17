@@ -3,10 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 47;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		14AD5FE91C99FB5200F03EE7 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14AD5FE81C99FB5200F03EE7 /* Launch Screen.storyboard */; };
+		14AD5FEF1C99FF9700F03EE7 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14AD5FEE1C99FF9700F03EE7 /* AVFoundation.framework */; };
 		4D4C0E11E70A37FDDED1C353 /* Pods_IFGMediaCapture_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B08F888E92A7792C21F11FDB /* Pods_IFGMediaCapture_Tests.framework */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
@@ -37,6 +39,8 @@
 
 /* Begin PBXFileReference section */
 		0F53F969448AD0487FEA7B35 /* Pods_IFGMediaCapture_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IFGMediaCapture_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		14AD5FE81C99FB5200F03EE7 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		14AD5FEE1C99FF9700F03EE7 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		37BCF6EBD98F4F1214271BC4 /* Pods-IFGMediaCapture_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IFGMediaCapture_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IFGMediaCapture_Tests/Pods-IFGMediaCapture_Tests.debug.xcconfig"; sourceTree = "<group>"; };
 		4B597B3B0197CFAEDB8BF509 /* README.md */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = ../README.md; sourceTree = "<group>"; };
 		6003F58A195388D20070C39A /* IFGMediaCapture_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IFGMediaCapture_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -72,6 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14AD5FEF1C99FF9700F03EE7 /* AVFoundation.framework in Frameworks */,
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F58E195388D20070C39A /* Foundation.framework in Frameworks */,
@@ -128,6 +133,7 @@
 		6003F58C195388D20070C39A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				14AD5FEE1C99FF9700F03EE7 /* AVFoundation.framework */,
 				6003F58D195388D20070C39A /* Foundation.framework */,
 				6003F58F195388D20070C39A /* CoreGraphics.framework */,
 				6003F591195388D20070C39A /* UIKit.framework */,
@@ -144,6 +150,7 @@
 				6003F59C195388D20070C39A /* IFGAppDelegate.h */,
 				6003F59D195388D20070C39A /* IFGAppDelegate.m */,
 				873B8AEA1B1F5CCA007FD442 /* Main.storyboard */,
+				14AD5FE81C99FB5200F03EE7 /* Launch Screen.storyboard */,
 				6003F5A5195388D20070C39A /* IFGViewController.h */,
 				6003F5A6195388D20070C39A /* IFGViewController.m */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
@@ -253,7 +260,7 @@
 				};
 			};
 			buildConfigurationList = 6003F585195388D10070C39A /* Build configuration list for PBXProject "IFGMediaCapture" */;
-			compatibilityVersion = "Xcode 3.2";
+			compatibilityVersion = "Xcode 6.3";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -278,6 +285,7 @@
 			files = (
 				873B8AEB1B1F5CCA007FD442 /* Main.storyboard in Resources */,
 				6003F5A9195388D20070C39A /* Images.xcassets in Resources */,
+				14AD5FE91C99FB5200F03EE7 /* Launch Screen.storyboard in Resources */,
 				6003F598195388D20070C39A /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -467,7 +475,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -500,7 +508,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -517,7 +525,7 @@
 				GCC_PREFIX_HEADER = "IFGMediaCapture/IFGMediaCapture-Prefix.pch";
 				INFOPLIST_FILE = "IFGMediaCapture/IFGMediaCapture-Info.plist";
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.rooftoptek.IFGMediaCapture-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
@@ -533,7 +541,7 @@
 				GCC_PREFIX_HEADER = "IFGMediaCapture/IFGMediaCapture-Prefix.pch";
 				INFOPLIST_FILE = "IFGMediaCapture/IFGMediaCapture-Info.plist";
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.${PRODUCT_NAME:rfc1034identifier}";
+				PRODUCT_BUNDLE_IDENTIFIER = "org.rooftoptek.IFGMediaCapture-Example";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				WRAPPER_EXTENSION = app;
 			};
