@@ -41,12 +41,6 @@
 - (void)registerInterestInOutput:(id<IFGMediaCaptureSessionOutputObserver>)observer onCompletion:(IFGMediaCaptureSessionSetupCompletionBlock)completionBlock;
 - (void)unregisterInterestInOutput:(id<IFGMediaCaptureSessionOutputObserver>)observer onCompletion:(IFGMediaCaptureSessionSetupCompletionBlock)completionBlock;
 
-//Writer
-@property(nonatomic, readonly,strong) AVCaptureMovieFileOutput *movieFileOutput;
-@property(nonatomic, assign) BOOL notifyOnResume;
-@property(nonatomic, assign) BOOL freezeFrame;
-@property(nonatomic, assign) BOOL pauseCapture;
-
 - (void)start;
 - (void)stop;
 

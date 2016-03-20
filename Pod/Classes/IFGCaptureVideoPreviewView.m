@@ -17,7 +17,7 @@
 
 - (void)layoutSubviews {
     [super layoutSubviews];
-    [(AVCaptureVideoPreviewLayer *)self.layer setVideoGravity:AVLayerVideoGravityResizeAspect];
+    [(AVCaptureVideoPreviewLayer *)self.layer setVideoGravity:AVLayerVideoGravityResizeAspectFill];
 }
 
 @end
