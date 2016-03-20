@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "IFGMediaCaptureTypes.h"
 
 @interface IFGCaptureVideoPreviewView : UIView
 

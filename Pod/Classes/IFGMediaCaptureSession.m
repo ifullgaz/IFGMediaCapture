@@ -10,13 +10,13 @@
 #import "AVCaptureDevice+IFGMediaCapture.h"
 #import "IFGCaptureFileOutput.h"
 
-typedef void(^IFGMediaCaptureSessionValidationCompletionBlock)(id result, NSError *error);
-
 // Capture queues - Global to all instances
 static dispatch_queue_t                                                         videoCaptureQueue;
 static dispatch_queue_t                                                         audioCaptureQueue;
 // Capture session queue
 static dispatch_queue_t                                                         sessionQueue;
+// Dispatch queue
+static dispatch_queue_t                                                         dispatchQueue;
 
 @interface IFGMediaCaptureSession ()
 
@@ -57,6 +57,7 @@ static dispatch_queue_t                                                         
 - (void)updateVideoOutputOrientation;
 // Notifications handling
 - (void)handleSessionDeviceRotation:(NSNotification *)notification;
+- (CMSampleBufferRef)sampleBufferWithFrameDurationFromVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer;
 
 @end
 
@@ -181,9 +182,10 @@ static dispatch_queue_t                                                         
         if (!self.videoOutput) {
             self.videoOutput = [[AVCaptureVideoDataOutput alloc] init];
             [self.videoOutput setAlwaysDiscardsLateVideoFrames:YES];
-            [self.videoOutput setVideoSettings:[NSDictionary dictionaryWithObjectsAndKeys:
-                                                [NSNumber numberWithInt:kCVPixelFormatType_32BGRA],(id)kCVPixelBufferPixelFormatTypeKey,
-                                                nil]];
+            [self.videoOutput setVideoSettings:@{
+                                                 (id)kCVPixelBufferPixelFormatTypeKey:
+                                                 [NSNumber numberWithInt:kCVPixelFormatType_32BGRA]
+                                                 }];
             if ([self.session canAddOutput:self.videoOutput]) {
                 [self.session addOutput:self.videoOutput];
             }
@@ -276,33 +278,10 @@ static dispatch_queue_t                                                         
     if (notification.object != self.session) {
         return;
     }
-    self.state = IFGMediaCaptureSessionStateRunning;
-    self.shouldStart = NO;
-    if (self.shouldStop) {
-        self.shouldStop = NO;
-//        [self stopSession];
-        return;
-    }
-    
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([self.delegate respondsToSelector:@selector(captureSessionManagerDidStart:)]) {
-            [self.delegate captureSessionManagerDidStart:self];
-        }
-    });
 }
 
 - (void)handleSessionStopRunning:(NSNotification *)notification {
     if (notification.object != self.session) {
-        return;
-    }
-    
-    self.state = IFGMediaCaptureSessionStateStopped;
-    [self reportStopped];
-    if (self.shouldStart) {
-        self.shouldStart = NO;
-        dispatch_async(sessionQueue, ^{
-//            [self resumeSession];
-        });
         return;
     }
 }
@@ -311,65 +290,29 @@ static dispatch_queue_t                                                         
     if (notification.object != self.session) {
         return;
     }
-    if (self.shouldStop) {
-        [self reportStopped];
-    }
-//    else {
-//        self.videoOrientation = self.previewLayer.connection.videoOrientation;
-//        //        [self.previewLayer removeFromSuperlayer];
-//        [[NSNotificationCenter defaultCenter] postNotificationName:kNotificationVideoSuspendedDuringPhoneCall object:self];
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            if ([self.delegate respondsToSelector:@selector(captureSessionManagerInterrupted:)]) {
-//                [self.delegate captureSessionManagerInterrupted:self];
-//            }
-//        });
-//    }
-//    if (self.shouldStart ||
-//        (self.isRecording && self.isLive)) {
-//        if ([MobliAVCaptureManager hasAPhoneCall]) {
-//        }
-//        else if ([UIApplication sharedApplication].applicationState != UIApplicationStateActive) {
-//            MBLogVerbose(@"Recovering video after interruption");
-//            
-//            DELAYED_PERFORM(1.0, ^{
-//                //                [self.previewLayer removeFromSuperlayer];
-//                [self setupSessionWithPreset:self.session.sessionPreset completion:nil];
-//            });
-//        }
-//        return;
-//    }
 }
 
 - (void)handleSessionError:(NSNotification*)notification {
     if (notification.object != self.session) {
         return;
     }
-    self.state = IFGMediaCaptureSessionStateStopped;
-    self.shouldStop = (self.shouldStop ||
-                       [UIApplication sharedApplication].applicationState == UIApplicationStateBackground);
-    if (self.shouldStop) {
-        [self reportStopped];
-    }
-    
-//    if ([IFGMediaCaptureSession hasAPhoneCall]) {
-//        [self repairSessionIfCallDismissed];
-//        return;
-//    }
-    
-    self.shouldStart = NO;
-//    DELAYED_PERFORM(0.2, ^{
-//        //        [self.previewLayer removeFromSuperlayer];
-//        [self setupSessionWithPreset:self.session.sessionPreset completion:nil];
-//    });
 }
 
-- (void)reportStopped {
-    self.state = IFGMediaCaptureSessionStateStopped;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        if ([self.delegate respondsToSelector:@selector(captureSessionManagerDidStop:)]) {
-            [self.delegate captureSessionManagerDidStop:self];
-        }
-    });
+- (CMSampleBufferRef)sampleBufferWithFrameDurationFromVideoSampleBuffer:(CMSampleBufferRef)sampleBuffer {
+    CMTime duration = self.videoDevice.activeVideoMinFrameDuration;
+    CMItemCount count;
+    CMSampleBufferGetSampleTimingInfoArray(sampleBuffer, 0, nil, &count);
+    CMSampleTimingInfo *timingInfoArray = malloc(sizeof(CMSampleTimingInfo) * count);
+    CMSampleBufferGetSampleTimingInfoArray(sampleBuffer, count, timingInfoArray, &count);
+    
+    for (CMItemCount i = 0; i < count; i++) {
+        timingInfoArray[i].duration = duration;
+    }
+    
+    CMSampleBufferRef adjustedSampleBuffer;
+    CMSampleBufferCreateCopyWithNewTiming(nil, sampleBuffer, count, timingInfoArray, &adjustedSampleBuffer);
+    free(timingInfoArray);
+    return adjustedSampleBuffer;
 }
 
 @end
@@ -377,9 +320,13 @@ static dispatch_queue_t                                                         
 @implementation IFGMediaCaptureSession (AVCaptureDataOutputSampleBufferDelegate)
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
-    NSString *mediaType = (captureOutput == self.videoOutput) ? AVMediaTypeVideo : AVMediaTypeAudio;
+    IFGMediaCaptureMediaType mediaType = (captureOutput == self.videoOutput) ? IFGMediaCaptureMediaTypeVideo : IFGMediaCaptureMediaTypeAudio;
     CFRetain(sampleBuffer);
-    dispatch_async(sessionQueue, ^{
+    if (mediaType == IFGMediaCaptureMediaTypeVideo) {
+        CFRelease(sampleBuffer);
+        sampleBuffer = [self sampleBufferWithFrameDurationFromVideoSampleBuffer:sampleBuffer];
+    }
+    dispatch_async(dispatchQueue, ^{
         for (id<IFGMediaCaptureSessionOutputObserver> outputClient in self.outputClients) {
             [outputClient
              captureSessionManager:self
@@ -391,9 +338,9 @@ static dispatch_queue_t                                                         
 }
 
 - (void)captureOutput:(AVCaptureOutput *)captureOutput didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
-    NSString *mediaType = (captureOutput == self.videoOutput) ? AVMediaTypeVideo : AVMediaTypeAudio;
+    IFGMediaCaptureMediaType mediaType = (captureOutput == self.videoOutput) ? IFGMediaCaptureMediaTypeVideo : IFGMediaCaptureMediaTypeAudio;
     CFRetain(sampleBuffer);
-    dispatch_async(sessionQueue, ^{
+    dispatch_async(dispatchQueue, ^{
         for (id<IFGMediaCaptureSessionOutputObserver> outputClient in self.outputClients) {
             [outputClient
              captureSessionManager:self
@@ -413,9 +360,10 @@ static dispatch_queue_t                                                         
     if (self) {
         static dispatch_once_t onceToken;
         dispatch_once(&onceToken, ^{
-            videoCaptureQueue = dispatch_queue_create("IFGMediaCaptureVideoQueue", DISPATCH_QUEUE_SERIAL);
-            audioCaptureQueue = dispatch_queue_create("IFGMediaCaptureAudioQueue", DISPATCH_QUEUE_SERIAL);
-            sessionQueue = dispatch_queue_create("IFGMediaCaptureSessionQueue", DISPATCH_QUEUE_SERIAL);
+            videoCaptureQueue = dispatch_queue_create("IFGMediaCaptureVideoQueue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0));
+            audioCaptureQueue = dispatch_queue_create("IFGMediaCaptureAudioQueue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0));
+            sessionQueue = dispatch_queue_create("IFGMediaCaptureSessionQueue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0));
+            dispatchQueue = dispatch_queue_create("IFGMediaCaptureDispatchQueue", dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, QOS_CLASS_USER_INITIATED, 0));
         });
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSessionStartRunning:) name:AVCaptureSessionDidStartRunningNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(handleSessionStopRunning:) name:AVCaptureSessionDidStopRunningNotification object:nil];
@@ -473,6 +421,7 @@ static dispatch_queue_t                                                         
         [self.session commitConfiguration];
         self.configuration = configuration;
         self.state = state;
+        NSLog(@"Configured");
         dispatch_async(dispatch_get_main_queue(), ^{
             completionBlock(nil);
         });
@@ -497,8 +446,8 @@ static dispatch_queue_t                                                         
     dispatch_async(sessionQueue, ^{
         self.state = IFGMediaCaptureSessionStateStarting;
         [self.session beginConfiguration];
-        [self.videoOutput setSampleBufferDelegate:self queue:videoCaptureQueue];
-        [self.audioOutput setSampleBufferDelegate:self queue:audioCaptureQueue];
+        [self.videoOutput setSampleBufferDelegate:self queue:sessionQueue];
+        [self.audioOutput setSampleBufferDelegate:self queue:sessionQueue];
         [self.session commitConfiguration];
         [self.session startRunning];
         self.state = IFGMediaCaptureSessionStateRunning;

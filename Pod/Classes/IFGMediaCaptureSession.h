@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 #import "IFGMediaCaptureSessionConfiguration.h"
+#import "IFGMediaCaptureTypes.h"
 
 @class IFGMediaCaptureSession;
 
@@ -24,30 +25,10 @@
 @protocol IFGMediaCaptureSessionOutputObserver <NSObject>
 
 @optional
-- (void)captureSessionManager:(IFGMediaCaptureSession *)captureSessionManager didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer mediaType:(NSString *)mediaType;
-- (void)captureSessionManager:(IFGMediaCaptureSession *)captureSessionManager didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer mediaType:(NSString *)mediaType;
+- (void)captureSessionManager:(IFGMediaCaptureSession *)captureSessionManager didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer mediaType:(IFGMediaCaptureMediaType)mediaType;
+- (void)captureSessionManager:(IFGMediaCaptureSession *)captureSessionManager didDropSampleBuffer:(CMSampleBufferRef)sampleBuffer mediaType:(IFGMediaCaptureMediaType)mediaType;
 
 @end
-
-#define IFGMediaCaptureSessionErrorDomain                                       @"IFGMediaCaptureSessionErrorDomain"
-
-typedef enum {
-    IFGMediaCaptureSessionErrorPreset            = -1,
-    IFGMediaCaptureSessionErrorNoVideoDevice     = -2,
-    IFGMediaCaptureSessionErrorPresetVideoDevice = -3,
-    IFGMediaCaptureSessionErrorNoAudioDevice     = -4
-} IFGMediaCaptureSessionError;
-
-typedef enum {
-    IFGMediaCaptureSessionStateCreated,
-    IFGMediaCaptureSessionStateConfiguring,
-    IFGMediaCaptureSessionStateStarting,
-    IFGMediaCaptureSessionStateRunning,
-    IFGMediaCaptureSessionStateStopping,
-    IFGMediaCaptureSessionStateStopped
-} IFGMediaCaptureSessionState;
-
-typedef void(^IFGMediaCaptureSessionSetupCompletionBlock)(NSError *error);
 
 @interface IFGMediaCaptureSession : NSObject
 

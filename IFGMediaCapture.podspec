@@ -35,6 +35,6 @@ Pod::Spec.new do |s|
   }
 
   # s.public_header_files = 'Pod/Classes/**/*.h'
-  s.frameworks = 'UIKit', 'AVFoundation', 'CoreGraphics', ''CoreLocation', 'AssetsLibrary'
+  s.frameworks = 'UIKit', 'AVFoundation', 'CoreGraphics', 'CoreLocation', 'AssetsLibrary'
   # s.dependency 'AFNetworking', '~> 2.3'
 end

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1417E4381C9DF91600DF1CEB /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1417E4371C9DF91600DF1CEB /* AVKit.framework */; };
+		1463356C1C9DEF300099F26C /* IFGMovieViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1463356B1C9DEF300099F26C /* IFGMovieViewController.m */; };
 		14AD5FE91C99FB5200F03EE7 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14AD5FE81C99FB5200F03EE7 /* Launch Screen.storyboard */; };
 		14AD5FEF1C99FF9700F03EE7 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14AD5FEE1C99FF9700F03EE7 /* AVFoundation.framework */; };
 		4D4C0E11E70A37FDDED1C353 /* Pods_IFGMediaCapture_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B08F888E92A7792C21F11FDB /* Pods_IFGMediaCapture_Tests.framework */; };
@@ -39,6 +41,9 @@
 
 /* Begin PBXFileReference section */
 		0F53F969448AD0487FEA7B35 /* Pods_IFGMediaCapture_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_IFGMediaCapture_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		1417E4371C9DF91600DF1CEB /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
+		1463356A1C9DEF300099F26C /* IFGMovieViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IFGMovieViewController.h; sourceTree = "<group>"; };
+		1463356B1C9DEF300099F26C /* IFGMovieViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IFGMovieViewController.m; sourceTree = "<group>"; };
 		14AD5FE81C99FB5200F03EE7 /* Launch Screen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		14AD5FEE1C99FF9700F03EE7 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		37BCF6EBD98F4F1214271BC4 /* Pods-IFGMediaCapture_Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-IFGMediaCapture_Tests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-IFGMediaCapture_Tests/Pods-IFGMediaCapture_Tests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -76,6 +81,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1417E4381C9DF91600DF1CEB /* AVKit.framework in Frameworks */,
 				14AD5FEF1C99FF9700F03EE7 /* AVFoundation.framework in Frameworks */,
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
@@ -133,6 +139,7 @@
 		6003F58C195388D20070C39A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				1417E4371C9DF91600DF1CEB /* AVKit.framework */,
 				14AD5FEE1C99FF9700F03EE7 /* AVFoundation.framework */,
 				6003F58D195388D20070C39A /* Foundation.framework */,
 				6003F58F195388D20070C39A /* CoreGraphics.framework */,
@@ -153,6 +160,8 @@
 				14AD5FE81C99FB5200F03EE7 /* Launch Screen.storyboard */,
 				6003F5A5195388D20070C39A /* IFGViewController.h */,
 				6003F5A6195388D20070C39A /* IFGViewController.m */,
+				1463356A1C9DEF300099F26C /* IFGMovieViewController.h */,
+				1463356B1C9DEF300099F26C /* IFGMovieViewController.m */,
 				6003F5A8195388D20070C39A /* Images.xcassets */,
 				6003F594195388D20070C39A /* Supporting Files */,
 			);
@@ -398,6 +407,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1463356C1C9DEF300099F26C /* IFGMovieViewController.m in Sources */,
 				6003F59E195388D20070C39A /* IFGAppDelegate.m in Sources */,
 				6003F5A7195388D20070C39A /* IFGViewController.m in Sources */,
 				6003F59A195388D20070C39A /* main.m in Sources */,

@@ -8,6 +8,7 @@
 
 #import "IFGViewController.h"
 #import <IFGMediaCapture/IFGMediaCapture.h>
+#import <AVKit/AVKit.h>
 
 @interface IFGViewController ()
 
@@ -20,23 +21,24 @@
 
 @interface IFGViewController (IFGCaptureFileOutputDelegate) <IFGCaptureFileOutputDelegate>
 
-- (void)captureFileOutputDidStart:(IFGCaptureFileOutput *)captureFileOutput;
-- (void)captureFileOutputDidStop:(IFGCaptureFileOutput *)captureFileOutput error:(NSError *)captureError;
+- (void)captureFileOutputDidStartRecording:(IFGCaptureFileOutput *)captureFileOutput;
+- (void)captureFileOutputDidStopRecording:(IFGCaptureFileOutput *)captureFileOutput;
 
 @end
 
 
 @implementation IFGViewController (IFGCaptureFileOutputDelegate)
 
-- (void)captureFileOutputDidStart:(IFGCaptureFileOutput *)captureFileOutput {
+- (void)captureFileOutputDidStartRecording:(IFGCaptureFileOutput *)captureFileOutput {
     [self.recordButton setTitleColor:[UIColor redColor] forState:UIControlStateNormal];
 }
 
-- (void)captureFileOutputDidStop:(IFGCaptureFileOutput *)captureFileOutput error:(NSError *)captureError {
+- (void)captureFileOutputDidStopRecording:(IFGCaptureFileOutput *)captureFileOutput {
     [self.recordButton setTitleColor:[UIColor yellowColor] forState:UIControlStateNormal];
     captureFileOutput.delegate = self;
     if (self.captureMovieFileOutput == captureFileOutput) {
         self.captureMovieFileOutput = nil;
+        [self performSegueWithIdentifier:@"ShowPlayerSegue" sender:captureFileOutput.outputFileURL];
     }
 }
 
@@ -83,13 +85,27 @@
         NSURL *movieFileURL = [documentsURL URLByAppendingPathComponent:[NSString stringWithFormat:@"%.0f.mov", [[NSDate date] timeIntervalSince1970]]];
         self.captureMovieFileOutput = [IFGCaptureFileOutput captureFileOutputToURL:movieFileURL withSession:self.captureSessionManager];
         self.captureMovieFileOutput.delegate = self;
-        [self.captureMovieFileOutput startRecordingOnCompletion:^(NSError *error) {
-        }];
+        [self.captureMovieFileOutput start];
     }
     else {
-        [self.captureMovieFileOutput stopRecordingOnCompletion:^(NSError *error) {
-            
-        }];
+        [self.captureMovieFileOutput stop];
+    }
+}
+
+- (IBAction)pauseAudioButtonPressed:(id)sender {
+    if ([self.captureMovieFileOutput paused]) {
+        [self.captureMovieFileOutput resume];
+    }
+    else {
+        [self.captureMovieFileOutput pause];
+    }
+}
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    NSString *segueIdentifier = segue.identifier;
+    if ([segueIdentifier isEqualToString:@"ShowPlayerSegue"]) {
+        AVPlayerViewController *viewController = (AVPlayerViewController *)segue.destinationViewController;
+        viewController.player = [AVPlayer playerWithURL:sender];
     }
 }
 

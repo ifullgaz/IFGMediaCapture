@@ -7,8 +7,7 @@
 //
 
 #import <AVFoundation/AVFoundation.h>
-
-typedef void(^IFGMediaCaptureBlockingErrorBlock)(NSError *error);
+#import "IFGMediaCaptureTypes.h"
 
 @interface AVCaptureDevice (IFGMediaCapture)
 

@@ -6,7 +6,7 @@
 //  Copyright (c) 2016 ifullgaz. All rights reserved.
 //
 
-@import UIKit;
+#import <UIKit/UIKit.h>
 
 @interface IFGViewController : UIViewController
 

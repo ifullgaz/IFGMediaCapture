@@ -9,6 +9,7 @@
 #ifndef IFGMediaCapture_h
 #define IFGMediaCapture_h
 
+#import <IFGMediaCapture/IFGMediaCaptureTypes.h>
 #import <IFGMediaCapture/IFGMediaCaptureSession.h>
 #import <IFGMediaCapture/IFGMediaCaptureSessionConfiguration.h>
 #import <IFGMediaCapture/IFGMediaCaptureSessionAuthorisationHelper.h>

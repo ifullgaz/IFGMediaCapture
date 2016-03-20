@@ -9,15 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "IFGMediaCaptureSessionConfiguration.h"
 
-typedef enum {
-    IFGMediaCaptureSessionAuthorisationHelperTypeVideo    = 1<<0,
-    IFGMediaCaptureSessionAuthorisationHelperTypeAudio    = 1<<1,
-    IFGMediaCaptureSessionAuthorisationHelperTypeLibrary  = 1<<2,
-    IFGMediaCaptureSessionAuthorisationHelperTypeLocation = 1<<3,
-} IFGMediaCaptureSessionAuthorisationHelperType;
-
-typedef void(^IFGMediaCaptureSessionAuthorisationHelperCompletionBlock)(BOOL granted);
-
 @interface IFGMediaCaptureSessionAuthorisationHelper : NSObject
 
 + (IFGMediaCaptureSessionAuthorisationHelperType)checkAuthorizationsForConfiguration:(IFGMediaCaptureSessionConfiguration *)configuration;
